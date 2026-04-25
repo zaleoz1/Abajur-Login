@@ -2,7 +2,7 @@
 
 <p align="center">
   <img alt="Status" src="https://img.shields.io/badge/status-conclu%C3%ADdo-22c55e?style=for-the-badge" />
-  <img alt="Tech" src="https://img.shields.io/badge/HTML-CSS-JS-0ea5e9?style=for-the-badge" />
+  <img alt="Tech" src="https://img.shields.io/badge/Tech-HTML%20%7C%20CSS%20%7C%20JS-0ea5e9?style=for-the-badge" />
   <img alt="UI" src="https://img.shields.io/badge/UI-Interativa-6366f1?style=for-the-badge" />
 </p>
 
@@ -51,7 +51,3 @@ Opcional (recomendado para audio/recursos locais):
 ## Autor
 
 Projeto feito por **Isaléo Guimarães**.
-
----
-
-Se quiser, eu tambem posso criar uma versao com GIF de demonstracao e secao de deploy (GitHub Pages) para deixar o repositorio ainda mais profissional.
