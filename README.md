@@ -32,16 +32,6 @@ Projeto focado em:
 - JavaScript Vanilla
 - SVG (componente da luminaria)
 
-## Estrutura do Projeto
-
-```text
-FEZ-Lamp-Login-Panel/
-├─ Abajur/
-│  ├─ index.html
-│  └─ click-sound.mp3
-└─ README.md
-```
-
 ## Como Executar
 
 1. Abra a pasta `FEZ-Lamp-Login-Panel`.
