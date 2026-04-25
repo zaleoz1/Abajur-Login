@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>KontrollaAPP — Entrar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ─── Tokens de design ──────────────────────────────────── */
+        :root {
+            --on: 0;
+
+            /* Cores da luminária — controladas por --on (0 = apagada, 1 = ligada) */
+            --opening: hsl(218, calc((10 + var(--on) * 70) * 1%), calc((18 + var(--on) * 68) * 1%));
+            --base-top: hsl(218, calc(var(--on) * 25%), calc((30 + var(--on) * 38) * 1%));
+            --base-side: hsl(218, calc(var(--on) * 25%), calc((15 + var(--on) * 35) * 1%));
+            --post: hsl(218, calc(var(--on) * 20%), calc((18 + var(--on) * 35) * 1%));
+            --shade-l: hsl(218, calc(var(--on) * 35%), calc((28 + var(--on) * 55) * 1%));
+            --shade-m: hsl(218, calc(var(--on) * 35%), calc((16 + var(--on) * 32) * 1%));
+            --shade-d: hsl(218, calc(var(--on) * 35%), calc((9 + var(--on) * 18) * 1%));
+            --blend-a: hsla(218, calc(var(--on) * 30%), calc((45 + var(--on) * 50) * 1%), 0.85);
+            --blend-b: hsla(218, calc(var(--on) * 30%), calc((18 + var(--on) * 28) * 1%), 0.25);
+            --blend-c: hsla(218, calc(var(--on) * 30%), calc((18 + var(--on) * 28) * 1%), 0.50);
+            --glow-a: hsla(218, calc(var(--on) * 40%), calc((40 + var(--on) * 55) * 1%), 0.85);
+            --cord-l: calc((38 + var(--on) * 52) * 1%);
+
+            /* Paleta do app */
+            --bg: #030711;
+            --bg-deep: #02050c;
+            --bg-elev: #0c1929;
+            --pm: #0a3a6e;
+            --pg: #2563eb;
+            --pb: #60a5fa;
+            --pu: #bfdbfe;
+            --acc: #38bdf8;
+            --tp: #e8f4ff;
+            --tm: #6b8fb8;
+            --glass: rgba(6, 18, 42, 0.65);
+            --border: rgba(56, 130, 220, 0.28);
+            --ibg: rgba(255, 255, 255, 0.043);
+            --ibr: rgba(59, 130, 246, 0.22);
+
+            /* Movimento */
+            --ease-spring: 0.88s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ─── Reset ─────────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            min-height: 100dvh;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ─── Base (página) — cena noturna em camadas ───────────── */
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color-scheme: dark;
+            background-color: var(--bg-deep);
+            background-image:
+                linear-gradient(168deg,
+                    var(--bg-deep) 0%,
+                    #071018 18%,
+                    var(--bg) 42%,
+                    var(--bg-elev) 68%,
+                    var(--bg-deep) 100%);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding:
+                max(12px, env(safe-area-inset-top, 0px))
+                max(16px, env(safe-area-inset-right, 0px))
+                max(20px, env(safe-area-inset-bottom, 0px))
+                max(16px, env(safe-area-inset-left, 0px));
+        }
+
+        @keyframes nevoa-deslize {
+            0% {
+                transform: translate3d(-1.2%, -0.8%, 0);
+            }
+
+            100% {
+                transform: translate3d(1.4%, 1.1%, 0);
+            }
+        }
+
+        @keyframes nevoa-fundos {
+            0% {
+                background-position:
+                    0 0,
+                    36px 72px,
+                    0% 0%,
+                    0% 0%,
+                    0% 0%,
+                    0% 0%,
+                    0 0;
+            }
+
+            100% {
+                background-position:
+                    20px 14px,
+                    52px 96px,
+                    5% 3.5%,
+                    -3.5% -2.5%,
+                    2.5% -4%,
+                    -2.5% 3%,
+                    0 0;
+            }
+        }
+
+        /* Atmosfera: auroras + vinheta (mesh / night studio) */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: -4%;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.045) 0, transparent 1.5px),
+                radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.038) 0, transparent 1.2px),
+                radial-gradient(ellipse 95% 55% at 78% 8%,
+                    rgba(59, 130, 246, 0.24) 0%,
+                    rgba(30, 64, 175, 0.07) 38%,
+                    transparent 62%),
+                radial-gradient(ellipse 70% 50% at 12% 92%,
+                    rgba(14, 165, 233, 0.15) 0%,
+                    rgba(8, 47, 73, 0.09) 45%,
+                    transparent 68%),
+                radial-gradient(ellipse 55% 42% at 55% 88%,
+                    rgba(99, 102, 241, 0.12) 0%,
+                    transparent 58%),
+                radial-gradient(ellipse 45% 38% at 42% 32%,
+                    rgba(15, 118, 210, 0.13) 0%,
+                    transparent 52%),
+                radial-gradient(circle at 50% 50%,
+                    transparent 0%,
+                    rgba(2, 6, 14, 0.58) 100%);
+            background-size:
+                220px 220px,
+                280px 280px,
+                100% 100%,
+                100% 100%,
+                100% 100%,
+                100% 100%,
+                100% 100%;
+            background-position:
+                0 0,
+                36px 72px,
+                0 0,
+                0 0,
+                0 0,
+                0 0,
+                0 0;
+            animation:
+                nevoa-deslize 52s ease-in-out infinite alternate,
+                nevoa-fundos 44s ease-in-out infinite alternate;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body::before {
+                animation: none;
+                inset: 0;
+            }
+        }
+
+        @media (min-width: 721px) {
+
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        /* Brilho ambiente quando a luminária está ligada */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 50% 65% at 60% 50%,
+                    rgba(30, 110, 220, .38) 0%,
+                    rgba(8, 28, 62, .14) 52%,
+                    transparent 75%);
+            opacity: var(--on);
+            transition: opacity .9s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ─── Layout ────────────────────────────────────────────── */
+        .cena {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* ─── SVG da luminária ──────────────────────────────────── */
+        .luminaria {
+            height: 46vmin;
+            min-height: 300px;
+            max-height: 420px;
+            overflow: visible !important;
+            flex-shrink: 0;
+        }
+
+        /* Cor da corda definida por --cord-l */
+        .luminaria-corda {
+            stroke: hsl(218, 12%, var(--cord-l));
+            transition: stroke .1s;
+        }
+
+        .luminaria-luz {
+            opacity: var(--on);
+        }
+
+        /* Preenchimentos SVG a partir das variáveis CSS */
+        .preenchimento-abertura {
+            fill: var(--opening);
+        }
+
+        .preenchimento-base-topo {
+            fill: var(--base-top);
+        }
+
+        .preenchimento-base-lateral {
+            fill: var(--base-side);
+        }
+
+        .preenchimento-haste {
+            fill: var(--post);
+        }
+
+        .preenchimento-cupula {
+            fill: var(--shade-d);
+        }
+
+        /* Área clicável para arrastar a corda */
+        .luminaria-toque {
+            cursor: grab;
+            fill: transparent;
+        }
+
+        .luminaria-toque:active {
+            cursor: grabbing;
+        }
+
+        /* ─── Cartão de entrada ─────────────────────────────────── */
+        .cartao {
+            width: 100%;
+            max-width: 320px;
+            padding: 32px 28px 28px;
+            background: var(--glass);
+            backdrop-filter: blur(28px) saturate(1.5);
+            -webkit-backdrop-filter: blur(28px) saturate(1.5);
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            box-shadow: 0 22px 56px rgba(0, 0, 0, .72);
+            opacity: 0;
+            transform: scale(.90) translateX(12px);
+            transition:
+                opacity var(--ease-spring),
+                transform var(--ease-spring),
+                border-color var(--ease-spring),
+                box-shadow var(--ease-spring);
+            pointer-events: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Brilho sutil do vidro */
+        .cartao::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
+            background: linear-gradient(138deg, rgba(255, 255, 255, .05) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        .cartao.ativo {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+            pointer-events: auto;
+            border-color: rgba(59, 130, 246, .42);
+            box-shadow:
+                0 22px 56px rgba(0, 0, 0, .65),
+                0 0 44px 3px rgba(37, 99, 235, .22),
+                0 0 80px 12px rgba(10, 36, 86, .14);
+        }
+
+        /* Marca */
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .marca-icone {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--pm), var(--pg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, .48);
+            flex-shrink: 0;
+        }
+
+        .marca-icone svg {
+            width: 15px;
+            height: 15px;
+            fill: #fff;
+        }
+
+        .marca-nome {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.10rem;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            background: linear-gradient(130deg, var(--pu), var(--pb) 55%, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .marca-rotulo {
+            font-size: .59rem;
+            color: var(--tm);
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        /* Títulos */
+        .cartao-titulo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--tp);
+            margin-bottom: 3px;
+        }
+
+        .cartao-subtitulo {
+            font-size: .72rem;
+            color: var(--tm);
+            margin-bottom: 18px;
+        }
+
+        .cartao-separador {
+            width: 26px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--pg), transparent);
+            border-radius: 2px;
+            margin-bottom: 16px;
+        }
+
+        /* Campos */
+        .campo {
+            margin-bottom: 12px;
+        }
+
+        .campo label {
+            display: block;
+            font-size: .64rem;
+            font-weight: 500;
+            color: var(--tm);
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .campo-grupo {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .campo-icone {
+            position: absolute;
+            left: 11px;
+            color: var(--tm);
+            pointer-events: none;
+            display: flex;
+            transition: color .28s;
+        }
+
+        .campo-grupo:focus-within .campo-icone {
+            color: var(--acc);
+        }
+
+        .campo-grupo input {
+            width: 100%;
+            padding: 10px 11px 10px 35px;
+            background: var(--ibg);
+            border: 1px solid var(--ibr);
+            border-radius: 10px;
+            color: var(--tp);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .84rem;
+            outline: none;
+            transition: border-color .28s, box-shadow .28s, background .28s;
+        }
+
+        .campo-grupo input::placeholder {
+            color: rgba(100, 140, 188, .28);
+        }
+
+        .campo-grupo input:focus {
+            border-color: var(--acc);
+            background: rgba(37, 99, 235, .09);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+        }
+
+        .campo-alternar {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--tm);
+            display: flex;
+            transition: color .25s;
+            padding: 0;
+        }
+
+        .campo-alternar:hover {
+            color: var(--acc);
+        }
+
+        /* Link “esqueci a senha” */
+        .esqueci-senha {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -4px;
+            margin-bottom: 16px;
+        }
+
+        .esqueci-senha a {
+            font-size: .67rem;
+            color: var(--pb);
+            text-decoration: none;
+            transition: color .22s;
+        }
+
+        .esqueci-senha a:hover {
+            color: var(--pu);
+        }
+
+        /* Botão enviar */
+        .botao-entrar {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, var(--pm), var(--pg));
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: .87rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform .18s, box-shadow .28s;
+            box-shadow: 0 4px 20px rgba(20, 60, 140, .45);
+        }
+
+        .botao-entrar::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 45%;
+            height: 200%;
+            background: rgba(255, 255, 255, .13);
+            transform: skewX(-20deg);
+            transition: left .42s ease;
+        }
+
+        .botao-entrar:hover::after {
+            left: 115%;
+        }
+
+        .botao-entrar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 26px rgba(20, 60, 140, .55);
+        }
+
+        .botao-entrar:active {
+            transform: scale(.98);
+        }
+
+        /* Chamada para cadastro */
+        .cadastro-chamada {
+            text-align: center;
+            margin-top: 14px;
+            font-size: .72rem;
+            color: var(--tm);
+        }
+
+        .cadastro-chamada a {
+            color: var(--pb);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color .22s;
+        }
+
+        .cadastro-chamada a:hover {
+            color: var(--pu);
+        }
+
+        /* Tremor ao enviar com campos vazios */
+        @keyframes tremer {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-6px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* ─── Celular e telas estreitas ──────────────────────────── */
+        @media (max-width: 720px) {
+            body {
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            body::after {
+                background: radial-gradient(ellipse 85% 55% at 50% 28%,
+                        rgba(30, 110, 220, .34) 0%,
+                        rgba(8, 28, 62, .12) 50%,
+                        transparent 72%);
+            }
+
+            .cena {
+                flex-direction: column;
+                gap: clamp(12px, 4vw, 28px);
+                padding-bottom: 8px;
+            }
+
+            .luminaria {
+                height: min(42vmin, 52vw);
+                min-height: 200px;
+                max-height: 300px;
+                max-width: min(92vw, 360px);
+                flex-shrink: 1;
+            }
+
+            .cartao {
+                max-width: min(100%, 400px);
+                width: 100%;
+                margin-inline: auto;
+                padding: 26px 22px 24px;
+                border-radius: 20px;
+                transform: scale(.92) translateY(10px);
+            }
+
+            .cartao.ativo {
+                transform: scale(1) translateY(0);
+            }
+
+            .marca {
+                margin-bottom: 18px;
+            }
+
+            .cartao-subtitulo {
+                margin-bottom: 16px;
+            }
+
+            .campo-grupo input {
+                font-size: 16px;
+                padding: 12px 12px 12px 38px;
+            }
+
+            .campo-alternar {
+                min-width: 44px;
+                min-height: 44px;
+                align-items: center;
+                justify-content: center;
+                right: 4px;
+            }
+
+            .botao-entrar {
+                padding: 14px 12px;
+                font-size: .95rem;
+                touch-action: manipulation;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .luminaria {
+                min-height: 180px;
+                max-height: 260px;
+            }
+
+            .cartao {
+                padding: 22px 18px 20px;
+            }
+        }
+
+        @media (max-width: 720px) and (max-height: 520px) {
+            .cena {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+            }
+
+            .luminaria {
+                height: 36vh;
+                min-height: 140px;
+                max-height: 200px;
+                max-width: 45vw;
+            }
+
+            .cartao {
+                flex: 1 1 240px;
+                min-width: min(100%, 260px);
+                max-width: 320px;
+                transform: scale(.94) translateX(6px);
+            }
+
+            .cartao.ativo {
+                transform: scale(1) translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cena">
+
+        <!-- ══════════════════════════════════════════
+       LUMINÁRIA
+  ══════════════════════════════════════════ -->
+        <svg class="luminaria" viewBox="0 0 333 484" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- Elipse da abertura do abajur -->
+            <ellipse class="preenchimento-abertura" cx="165" cy="220" rx="130" ry="20" />
+            <ellipse cx="165" cy="220" rx="130" ry="20" fill="url(#grad-opening)" style="opacity:calc(1 - var(--on))" />
+
+            <!-- Base -->
+            <path class="preenchimento-base-lateral"
+                d="M165 464c44.183 0 80-8.954 80-20v-14h-22.869c-14.519-3.703-34.752-6-57.131-6-22.379 0-42.612 2.297-57.131 6H85v14c0 11.046 35.817 20 80 20z" />
+            <path
+                d="M165 464c44.183 0 80-8.954 80-20v-14h-22.869c-14.519-3.703-34.752-6-57.131-6-22.379 0-42.612 2.297-57.131 6H85v14c0 11.046 35.817 20 80 20z"
+                fill="url(#grad-side)" />
+            <ellipse class="preenchimento-base-topo" cx="165" cy="430" rx="80" ry="20" />
+            <ellipse cx="165" cy="430" rx="80" ry="20" fill="url(#grad-base)" />
+
+            <!-- Haste -->
+            <path class="preenchimento-haste" d="M180 142h-30v286c0 3.866 6.716 7 15 7 8.284 0 15-3.134 15-7V142z" />
+            <path d="M180 142h-30v286c0 3.866 6.716 7 15 7 8.284 0 15-3.134 15-7V142z" fill="url(#grad-post)" />
+
+            <!-- Corda de puxar -->
+            <path id="js-cord" class="luminaria-corda"
+                d="M124,190 C151.5,264.9 115.7,298.3 124,348" stroke-width="6" stroke-linecap="round" />
+
+            <!-- Cone de luz (visível só quando ligada) -->
+            <path class="luminaria-luz" d="M290.5 193H39L0 463.5c0 11.046 75.478 20 165.5 20s167-11.954 167-23l-42-267.5z"
+                fill="url(#grad-light)" />
+
+            <!-- Corpo do abajur -->
+            <path class="preenchimento-cupula" fill-rule="evenodd" clip-rule="evenodd"
+                d="M164.859 0c55.229 0 100 8.954 100 20l29.859 199.06C291.529 208.451 234.609 200 164.859 200S38.189 208.451 35 219.06L64.859 20c0-11.046 44.772-20 100-20z" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M164.859 0c55.229 0 100 8.954 100 20l29.859 199.06C291.529 208.451 234.609 200 164.859 200S38.189 208.451 35 219.06L64.859 20c0-11.046 44.772-20 100-20z"
+                fill="url(#grad-shade)" />
+
+            <!-- Gradientes -->
+            <defs>
+                <linearGradient id="grad-opening" x1="35" y1="220" x2="295" y2="220" gradientUnits="userSpaceOnUse">
+                    <stop />
+                    <stop offset="1" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="grad-base" x1="85" y1="444" x2="245" y2="444" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="var(--blend-a)" />
+                    <stop offset=".8" stop-color="var(--blend-b)" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="grad-side" x1="119" y1="430" x2="245" y2="430" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="var(--blend-c)" />
+                    <stop offset="1" stop-color="var(--blend-b)" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="grad-post" x1="150" y1="288" x2="180" y2="288" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="var(--blend-a)" />
+                    <stop offset="1" stop-color="var(--blend-b)" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="grad-light" x1="165.5" y1="218.5" x2="165.5" y2="340"
+                    gradientUnits="userSpaceOnUse">
+                    <stop stop-color="var(--glow-a)" stop-opacity=".10" />
+                    <stop offset="1" stop-color="var(--glow-a)" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="grad-shade" x1="56" y1="110" x2="295" y2="110" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="var(--shade-l)" stop-opacity=".8" />
+                    <stop offset="1" stop-color="var(--shade-m)" stop-opacity="0" />
+                </linearGradient>
+            </defs>
+
+            <!-- Zona invisível para arrastar a corda -->
+            <circle id="js-hit" class="luminaria-toque" cx="124" cy="348" r="60" />
+        </svg>
+
+        <!-- ══════════════════════════════════════════
+       CARTÃO DE ENTRADA
+  ══════════════════════════════════════════ -->
+        <div class="cartao" id="js-card">
+            <div class="marca">
+                <div class="marca-icone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="marca-nome">KontrollaAPP</div>
+                    <div class="marca-rotulo">Bem-vindo de volta!</div>
+                </div>
+            </div>
+
+            <h1 class="cartao-titulo">Bem-vindo de volta</h1>
+            <p class="cartao-subtitulo">Entre para continuar aprendendo</p>
+            <div class="cartao-separador"></div>
+
+            <div class="campo">
+                <label for="email">E-mail</label>
+                <div class="campo-grupo">
+                    <span class="campo-icone">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </span>
+                    <input type="email" id="email" placeholder="voce@exemplo.com" autocomplete="email" />
+                </div>
+            </div>
+
+            <div class="campo">
+                <label for="password">Senha</label>
+                <div class="campo-grupo">
+                    <span class="campo-icone">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </span>
+                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+                    <button class="campo-alternar" id="js-toggle-pw" type="button"
+                        aria-label="Mostrar ou ocultar senha">
+                        <svg id="js-eye" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="esqueci-senha"><a href="#">Esqueceu a senha?</a></div>
+
+            <button class="botao-entrar" id="js-submit" type="button">Entrar</button>
+
+            <p class="cadastro-chamada">Não tem uma conta? <a href="#">Cadastre-se</a></p>
+        </div>
+
+    </div>
+
+    <script>
+        /* ══════════════════════════════════════════════════════════════
+           FÍSICA DA CORDA
+           Arraste da corda com física. Puxada suficiente → toggleLight().
+           A corda é desenhada como Bézier cúbica da âncora até a ponteira.
+        ══════════════════════════════════════════════════════════════ */
+        const ROOT = document.documentElement;
+        const BODY = document.body;
+        const cartao = document.getElementById('js-card');
+        const cord = document.getElementById('js-cord');
+        const hit = document.getElementById('js-hit');
+        const luminariaEl = document.querySelector('.luminaria');
+
+        // Âncora SVG (topo da corda) e posição de repouso da ponteira
+        const AX = 124, AY = 190;
+        const REST_X = 124, REST_Y = 348;
+        const TRIGGER_DIST = 55;
+
+        let dragging = false;
+        let animating = false;
+        let lightOn = false;
+        let curX = REST_X, curY = REST_Y;
+        let idleSwingRaf = null;
+
+        // Converte coordenadas da tela → coordenadas SVG
+        function toSVG(sx, sy) {
+            const pt = luminariaEl.createSVGPoint();
+            pt.x = sx; pt.y = sy;
+            return pt.matrixTransform(luminariaEl.getScreenCTM().inverse());
+        }
+
+        // Monta um caminho Bézier natural para a corda (repouso quase vertical = mais barriga / ondulação)
+        function buildCord(tx, ty) {
+            const dx = tx - AX, dy = ty - AY;
+            const len = Math.hypot(dx, dy);
+            let sag = Math.max(4, 30 - len * 0.06);
+            if (len > 70 && Math.abs(dx) < 26) {
+                sag += 7;
+            }
+            const c1x = AX + dx * 0.15 + sag, c1y = AY + dy * 0.30 + sag;
+            const c2x = AX + dx * 0.70 - sag * 0.3, c2y = AY + dy * 0.72 - sag * 0.2;
+            return `M${AX},${AY} C${c1x},${c1y} ${c2x},${c2y} ${tx},${ty}`;
+        }
+
+        function updateCord(tx, ty) {
+            curX = tx; curY = ty;
+            cord.setAttribute('d', buildCord(tx, ty));
+            const tension = Math.min(Math.hypot(tx - REST_X, ty - REST_Y) / 120, 1);
+            cord.style.stroke = `hsl(218, 14%, ${Math.round(38 + tension * 52)}%)`;
+        }
+
+        updateCord(REST_X, REST_Y);
+
+        function stopIdleSwingAnimation(resetCord) {
+            if (idleSwingRaf !== null) {
+                cancelAnimationFrame(idleSwingRaf);
+                idleSwingRaf = null;
+            }
+            if (resetCord && !dragging) {
+                updateCord(REST_X, REST_Y);
+                cord.style.stroke = '';
+            }
+        }
+
+        function springBack(fromX, fromY, triggered) {
+            stopIdleSwingAnimation(false);
+            if (animating) return;
+            animating = true;
+            const dur = triggered ? 380 : 500;
+            const t0 = performance.now();
+
+            function tick(now) {
+                const t = Math.min((now - t0) / dur, 1);
+                const fn = triggered ? easeElastic(t) : easeOutBounce(t);
+                updateCord(fromX + (REST_X - fromX) * fn, fromY + (REST_Y - fromY) * fn);
+                if (t < 1) { requestAnimationFrame(tick); return; }
+                updateCord(REST_X, REST_Y);
+                cord.style.stroke = '';
+                animating = false;
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // Funções de easing
+        function easeElastic(t) {
+            if (!t || t === 1) return t;
+            return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+        }
+        function easeOutBounce(t) {
+            if (t < 1 / 2.75) return 7.5625 * t * t;
+            if (t < 2 / 2.75) { t -= 1.5 / 2.75; return 7.5625 * t * t + 0.750; }
+            if (t < 2.5 / 2.75) { t -= 2.25 / 2.75; return 7.5625 * t * t + 0.9375; }
+            t -= 2.625 / 2.75; return 7.5625 * t * t + 0.984375;
+        }
+
+        // Auxiliares de ponteiro/toque
+        function client(e) {
+            return e.touches
+                ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+                : { x: e.clientX, y: e.clientY };
+        }
+
+        function onDown(e) {
+            stopIdleSwingAnimation(false);
+            if (animating) return;
+            e.preventDefault();
+            dragging = true;
+        }
+        function onMove(e) {
+            if (!dragging) return;
+            e.preventDefault();
+            const { x, y } = client(e);
+            const sv = toSVG(x, y);
+            updateCord(sv.x, Math.max(AY + 20, sv.y));
+        }
+        function onUp() {
+            if (!dragging) return;
+            dragging = false;
+            const dist = Math.hypot(curX - REST_X, curY - REST_Y);
+            if (dist > TRIGGER_DIST) toggleLight();
+            springBack(curX, curY, dist > TRIGGER_DIST);
+        }
+
+        // Eventos na zona de toque e na linha da corda
+        [hit, cord].forEach(el => {
+            el.addEventListener('mousedown', onDown);
+            el.addEventListener('touchstart', onDown, { passive: false });
+        });
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onUp);
+
+        /* ══════════════════════════════════════════════════════════════
+           BALANÇO IDLE DA CORDA (só com abajur desligado, a cada 5 s)
+        ══════════════════════════════════════════════════════════════ */
+        const IDLE_SWING_MS = 5000;
+        const IDLE_SWING_DURATION_MS = 1100;
+        const IDLE_SWING_AMP = 16;
+
+        function runIdleCordSwing() {
+            if (lightOn || dragging || animating || idleSwingRaf !== null) return;
+            const t0 = performance.now();
+
+            function tick(now) {
+                if (lightOn || dragging || animating) {
+                    const resetCord = lightOn && !dragging && !animating;
+                    stopIdleSwingAnimation(resetCord);
+                    return;
+                }
+                const u = (now - t0) / IDLE_SWING_DURATION_MS;
+                if (u >= 1) {
+                    updateCord(REST_X, REST_Y);
+                    cord.style.stroke = '';
+                    idleSwingRaf = null;
+                    return;
+                }
+                const decay = Math.exp(-3.2 * u);
+                const wobble = Math.sin(u * Math.PI * 5);
+                const ox = IDLE_SWING_AMP * decay * wobble;
+                updateCord(REST_X + ox, REST_Y);
+                idleSwingRaf = requestAnimationFrame(tick);
+            }
+            idleSwingRaf = requestAnimationFrame(tick);
+        }
+
+        setInterval(runIdleCordSwing, IDLE_SWING_MS);
+
+        /* ══════════════════════════════════════════════════════════════
+           LIGA / DESLIGA A LUZ
+        ══════════════════════════════════════════════════════════════ */
+        const AUDIO = {
+            CLICK: new Audio("click-sound.mp3"),
+        };
+        function toggleLight() {
+            AUDIO.CLICK.play();
+            lightOn = !lightOn;
+            ROOT.style.setProperty('--on', lightOn ? '1' : '0');
+            cartao.classList.toggle('ativo', lightOn);
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           MOSTRAR / OCULTAR SENHA
+        ══════════════════════════════════════════════════════════════ */
+        const pwInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('js-eye');
+
+        const EYE_OPEN = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        const EYE_CLOSED = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+        document.getElementById('js-toggle-pw').addEventListener('click', () => {
+            const show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            eyeIcon.innerHTML = show ? EYE_CLOSED : EYE_OPEN;
+        });
+
+        /* ══════════════════════════════════════════════════════════════
+           ENVIO DO FORMULÁRIO
+        ══════════════════════════════════════════════════════════════ */
+        document.getElementById('js-submit').addEventListener('click', function () {
+            const email = document.getElementById('email').value.trim();
+            const pass = pwInput.value;
+
+            if (!email || !pass) {
+                this.style.animation = 'none';
+                void this.offsetHeight; // força reflow
+                this.style.animation = 'tremer .4s ease';
+                return;
+            }
+
+            this.disabled = true;
+            this.textContent = 'Entrando…';
+
+            setTimeout(() => {
+                this.textContent = '✓ Bem-vindo de volta!';
+                this.style.background = 'linear-gradient(135deg, #1a5c35, #27ae60)';
+                this.style.boxShadow = '0 6px 24px rgba(39, 174, 96, .45)';
+            }, 1200);
+        });
+    </script>
+
+</body>
+
+</html>
